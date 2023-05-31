@@ -1,0 +1,38 @@
+
+
+  
+ 
+
+  body {
+
+  background-color: #13131d;
+
+
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+    scroll-behavior: auto;
+}
+
+body:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-image:  ("./images/noise.gif");
+  z-index: -1;
+  background-color: #639;
+  opacity: .05;
+}
+
+@media only screen and (max-width: 767px){
+body {
+    overflow: hidden;
+    display: block;
+    overflow-y: auto;
+    scroll-behavior: auto!important;
+}
+}
