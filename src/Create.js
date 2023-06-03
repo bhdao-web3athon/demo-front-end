@@ -70,7 +70,7 @@ const Create = () => {
       const cid = await client.put(files);
       console.log("cid----->", cid)
       const fromAcct = await getFromAcct();
-      const call1 = api.tx.bhdao.createDocument(title, description, type, folderCID);
+      const call1 = api.tx.bhdao.createDocument(title, description, type, cid);
       console.log(fromAcct);
       const unsub = await call1.signAndSend(fromAcct, (result) => { console.log(result.toHuman()) });
       console.log(unsub);
