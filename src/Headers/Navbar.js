@@ -183,6 +183,15 @@ const Navbar = () => {
                           Create Proposal
                         </Link>
                       </li>
+                      <li className="">
+                        <Link
+                          to="/Images
+                        "
+                          className="its_new"
+                        >
+                          Images
+                        </Link>
+                      </li>
                     </ul>
                   </nav>
                 </div>

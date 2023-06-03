@@ -1,6 +1,7 @@
 import React from "react";
 import { createContext, useState } from "react";
 import Home from "./Home";
+import ImageView from "./imageView";
 import useAxios from "./hooks/useAxios";
 import { SubstrateContextProvider, useSubstrateState } from './substrate-lib';
 import SearchBar from "./components/SearchBar";
@@ -25,17 +26,18 @@ function App() {
   };
   return (
     <SubstrateContextProvider>
-    <Router>
-      <ImageContext.Provider value={value}>
-        <div className="App">
-          <Routes>
-            <Route exact path="/" element={<SearchBar />} />
-            <Route exact path="/Home" element={<Home />} />
-            <Route exact path="/Create" element={<CreateNewProposal />} />
-          </Routes>
-        </div>
-      </ImageContext.Provider>
-    </Router>
+      <Router>
+        <ImageContext.Provider value={value}>
+          <div className="App">
+            <Routes>
+              <Route exact path="/" element={<SearchBar />} />
+              <Route exact path="/Home" element={<Home />} />
+              <Route exact path="/Images" element={<ImageView />} />
+              <Route exact path="/Create" element={<CreateNewProposal />} />
+            </Routes>
+          </div>
+        </ImageContext.Provider>
+      </Router>
     </SubstrateContextProvider>
   );
 }
