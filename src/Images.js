@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Images.scss";
 import "mdbreact/dist/css/mdb.css";
 import * as Icon from "react-feather";
@@ -10,6 +10,8 @@ const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDdi
 
 const Images = () => {
     const { api, currentAccount } = useSubstrateState();
+    const[count,setCount] = useState(0);
+    const[docs,setDocs] =useState();
     const cid = localStorage.getItem("image_cid");
     const imageName = localStorage.getItem("image_name");
     const imageUrl = 'https://' + cid + '.ipfs.w3s.link/' + imageName;
@@ -20,7 +22,34 @@ const Images = () => {
         return currentAccount;
     };
 
-    console.log(getFromAcct());
+    
+    useEffect(() => {
+        const queryNumUploads = async() => {
+            const r1 = await api.query.bhdaoModule.uploadCount();
+            setCount(r1.toNumber());
+        }
+
+        queryNumUploads();
+    },[]);
+
+    useEffect(() => {
+        const queryDocs = async() => {
+            if (count > 0) {
+                let result = []
+                for (let i = 1; i <= count; ++i) {
+                    const r1 = await api.query.bhdaoModule.uploads(i);
+                    result.push(JSON.parse(r1));
+                }
+                setDocs(result);
+            }
+        }
+
+        queryDocs()
+    },[count]);
+
+    console.log(count);
+    console.log(docs);
+    
 
     return (
         <div className="main">
