@@ -12,7 +12,7 @@ import { Web3Storage } from "web3.storage";
 const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDdiNjYwNTlDNTNiMDI4QTQxYTUwOWE0MWQxRmFCM2ViMzc1OEZkNTQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzA3MzAzMTY2OTUsIm5hbWUiOiJUb2tlbjEifQ.eykiWWX9VaLAsl4Jf9WP_fueywUqL2HiF9ddSCD_-P4";
 
 const Create = () => {
-  const { api, currentAccount } = useSubstrateState();
+  const { api, keyring, currentAccount } = useSubstrateState();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [folderCID, setFolderCID] = useState('');
@@ -34,7 +34,12 @@ const Create = () => {
     return currentAccount;
   };
 
+  console.log(currentAccount);
+  console.log(api);
   console.log(getFromAcct());
+  const accounts = keyring.getPairs();
+  console.log(accounts);
+  console.log(accounts[0].address);
 
   const handleChangeTitle = (e) => {
 
@@ -70,9 +75,9 @@ const Create = () => {
       const cid = await client.put(files);
       console.log("cid----->", cid)
       const fromAcct = await getFromAcct();
-      const call1 = api.tx.bhdao.createDocument(title, description, type, cid);
-      console.log(fromAcct);
-      const unsub = await call1.signAndSend(fromAcct, (result) => { console.log(result.toHuman()) });
+      const call1 = api.tx.bhdaoModule.uploadDocument(cid);
+      console.log("acct",accounts[0]);
+      const unsub = await call1.signAndSend(accounts[0], (result) => { console.log(result.toHuman()) });
       console.log(unsub);
     } catch (error) {
       console.log('Error uploading file: ', error)
