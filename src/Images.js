@@ -114,7 +114,7 @@ const Images = () => {
                         cols="48"
                         placeholder="Format: `Name_Date_Historian-Initials.Org`"
                         name="title"
-                    >{docs.title[index] || ""}</textarea> {/* plz change this area to display */}
+                    >{docs.title[index] || ""}</textarea> {/* plz change this area to display here*/}
                     <label htmlFor="Description" className="form-label mb-1 mt-2">
                         Description
                     </label>
@@ -125,7 +125,7 @@ const Images = () => {
                         style={{ borderRadius: "10px" }}
                         placeholder="e.g. “Martin Luther King Jr. was a social activist and Baptist minister who played a key role in the American civil rights movement from the mid-1950s until his assassination in 1968.”"
                         name="description"
-                    >{docs.description[index] || ""}</textarea> {/* plz change this area to display */}
+                    >{docs.description[index] || ""}</textarea> {/* plz change this area to display here*/}
                 </Box>
             </div>
         </div>
