@@ -1,5 +1,4 @@
 import React from "react";
-import React from "react";
 import "./Contribute.scss";
 import sal from "sal.js";
 import * as Icon from "react-feather";

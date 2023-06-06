@@ -16,13 +16,11 @@ const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDdi
 const Images = () => {
     const { api, currentAccount } = useSubstrateState();
     const [count, setCount] = useState(0);
-    const [docs, setDocs] = useState({});
+    const [docs, setDocs] = useState();
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [imgUrl, setImgUrl] = useState("");
     const [index, setIndex] = useState(0);
-    const cid = localStorage.getItem("image_cid");
-    const imageName = localStorage.getItem("image_name");
-    const imageUrl = 'https://' + cid + '.ipfs.w3s.link/' + imageName;
-
-    console.log('imageUrl', imageUrl);
 
     const getFromAcct = async () => {
         return currentAccount;
@@ -36,6 +34,15 @@ const Images = () => {
         }
 
         queryNumUploads();
+
+        const cid = localStorage.getItem("image_cid");
+        const imageName = localStorage.getItem("image_name");
+        const imageUrl = 'https://' + cid + '.ipfs.w3s.link/' + imageName;
+        const imgTitle = localStorage.getItem("title");
+        const imgDescription = localStorage.getItem("description");
+        setImgUrl(imageUrl);
+        setTitle(imgTitle);
+        setDescription(imgDescription);
     }, []);
 
     useEffect(() => {
@@ -50,11 +57,26 @@ const Images = () => {
             }
         }
 
+        console.log(count);
         queryDocs()
     }, [count]);
 
+    const fetchByIndex = async (e) => {
+        if (count <= 0) return;
+        const currentIndex = e.target.value;
+        setIndex(currentIndex);
+        const hash = docs[currentIndex].hash_;
+        const name = docs[currentIndex].name;
+        const url = 'https://' + hash + '.ipfs.w3s.link/' + name;
+        const metadata = await fetch(url).then((res) => res.json());
+        console.log("meta",metadata);
+        setTitle(metadata.title);
+        setDescription(metadata.description);
+
+    }
+
     console.log(count);
-    console.log("docs;", docs);
+    console.log(docs);
 
 
     return (
@@ -85,7 +107,7 @@ const Images = () => {
 
             <div className="container-fluid">
                 <div className="img-container">
-                    <img className="our-img" src={imageUrl} />
+                    <img className="our-img" src={imgUrl} />
                 </div>
             </div>
             <div
@@ -103,7 +125,6 @@ const Images = () => {
                     <label htmlFor="name" className="form-label mb-3">
                         Index
                     </label>
-                    <input type="number" max={count} min="0" style={{background: "white"}} name="Index" onChange={(e)=>{setIndex(e.target.value)}}>{index}</input>
                     <label htmlFor="name" className="form-label mb-3">
                         Title
                     </label>
@@ -114,7 +135,7 @@ const Images = () => {
                         cols="48"
                         placeholder="Format: `Name_Date_Historian-Initials.Org`"
                         name="title"
-                    >{docs.title[index] || ""}</textarea> {/* plz change this area to display here*/}
+                    >{title}</textarea> {/* plz change this area to display here*/}
                     <label htmlFor="Description" className="form-label mb-1 mt-2">
                         Description
                     </label>
@@ -125,7 +146,7 @@ const Images = () => {
                         style={{ borderRadius: "10px" }}
                         placeholder="e.g. “Martin Luther King Jr. was a social activist and Baptist minister who played a key role in the American civil rights movement from the mid-1950s until his assassination in 1968.”"
                         name="description"
-                    >{docs.description[index] || ""}</textarea> {/* plz change this area to display here*/}
+                    >{description}</textarea> {/* plz change this area to display here*/}
                 </Box>
             </div>
         </div>
