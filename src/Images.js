@@ -5,6 +5,8 @@ import * as Icon from "react-feather";
 import { Link } from "react-router-dom";
 import { useSubstrateState } from "./substrate-lib";
 import Box from "@mui/material/Box";
+import { u8aToString, hexToU8a } from '@polkadot/util'
+
 
 const myStyle = {
     background: "white",
@@ -26,23 +28,23 @@ const Images = () => {
         return currentAccount;
     };
 
+    const queryNumUploads = async () => {
+        const r1 = await api.query.bhdaoModule.uploadCount();
+        console.log("r1", r1)
+        setCount(r1.toNumber());
+    }
 
     useEffect(() => {
-        const queryNumUploads = async () => {
-            const r1 = await api.query.bhdaoModule.uploadCount();
-            setCount(r1.toNumber());
-        }
-
         queryNumUploads();
 
-        const cid = localStorage.getItem("image_cid");
-        const imageName = localStorage.getItem("image_name");
-        const imageUrl = 'https://' + cid + '.ipfs.w3s.link/' + imageName;
-        const imgTitle = localStorage.getItem("title");
-        const imgDescription = localStorage.getItem("description");
-        setImgUrl(imageUrl);
-        setTitle(imgTitle);
-        setDescription(imgDescription);
+        // const cid = localStorage.getItem("image_cid");
+        // const imageName = localStorage.getItem("image_name");
+        // const imageUrl = 'https://' + cid + '.ipfs.w3s.link/' + imageName;
+        // const imgTitle = localStorage.getItem("title");
+        // const imgDescription = localStorage.getItem("description");
+        // setImgUrl(imageUrl);
+        // setTitle(imgTitle);
+        // setDescription(imgDescription);
     }, []);
 
     useEffect(() => {
@@ -51,7 +53,7 @@ const Images = () => {
                 let result = []
                 for (let i = 1; i <= count; ++i) {
                     const r1 = await api.query.bhdaoModule.uploads(i);
-                    result.push(JSON.parse(r1));
+                    result.push(u8aToString(hexToU8a(JSON.parse(r1).hash)));
                 }
                 setDocs(result);
             }
@@ -63,21 +65,24 @@ const Images = () => {
 
     const fetchByIndex = async (e) => {
         if (count <= 0) return;
-        const currentIndex = e.target.value;
+        const currentIndex = e.target.value - 1;
+        if (currentIndex > count) return;
         setIndex(currentIndex);
-        const hash = docs[currentIndex].hash_;
-        const name = docs[currentIndex].name;
-        const url = 'https://' + hash + '.ipfs.w3s.link/' + name;
+        const cid = docs[currentIndex];
+        // const name = docs[currentIndex].name;
+        const url = 'https://' + cid + '.ipfs.w3s.link/metadata.json';
         const metadata = await fetch(url).then((res) => res.json());
+        const imageUrl = metadata.image
         console.log("meta",metadata);
         setTitle(metadata.title);
         setDescription(metadata.description);
-
+        setImgUrl(imageUrl);
+        // console.log()
     }
 
-    console.log(count);
-    console.log(docs);
-
+    
+    console.log("title", title)
+    console.log("description", description)
 
     return (
         <div className="main" >
@@ -125,7 +130,8 @@ const Images = () => {
                     <label htmlFor="name" className="form-label mb-3">
                         Index
                     </label>
-                    <label htmlFor="name" className="form-label mb-3">
+                    <input id="name" type="number" min="1" max={count} defaultValue={count} onChange={fetchByIndex} style={myStyle}></input>
+                    <label htmlFor="title" className="form-label mb-3">
                         Title
                     </label>
                     <textarea
