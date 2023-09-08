@@ -34,12 +34,10 @@ const Create = () => {
     return currentAccount;
   };
 
-  console.log(currentAccount);
-  console.log(api);
-  console.log(getFromAcct());
+  console.log("api.tx", api.tx.bhdaoModule);
+ 
+ 
   const accounts = keyring.getPairs();
-  console.log(accounts);
-  console.log(accounts[0].address);
 
   const handleChangeTitle = (e) => {
 
@@ -67,18 +65,16 @@ const Create = () => {
       return;
     }
     // uploading metadata as json file
-    const blob = new Blob([`{"title": ${title}, "description": ${description},"image": https://${folderCID}.ipfs.w3s.link/${imageName}`], { type: 'application/json' })
-    const files = [
-      new File([blob], "test.json") // you can change file name to save.
-    ]
+    const obj = {"title": title, "description": description,"image": `https://${folderCID}.ipfs.w3s.link/${imageName}`}
+    const blob = new Blob([JSON.stringify(obj)], { type: 'application/json' })
+
     try {
-      const cid = await client.put(files);
-      console.log("cid----->", cid)
+      const cid = await client.put([new File([blob], "metadata.json")]);
+      console.log("cid----->", cid)  
       const fromAcct = await getFromAcct();
       const call1 = api.tx.bhdaoModule.uploadDocument(cid);
       console.log("acct",accounts[0]);
-      const unsub = await call1.signAndSend(accounts[0], (result) => { console.log(result.toHuman()) });
-      console.log(unsub);
+      const unsub = await call1.signAndSend(accounts[0], (result) => { console.log("tx-result------>",result.toHuman()) });
     } catch (error) {
       console.log('Error uploading file: ', error)
     }
